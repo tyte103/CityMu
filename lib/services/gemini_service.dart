@@ -28,6 +28,11 @@ class GeminiService {
   /// Initializes Gemini API with the given API key.
   void init({String? apiKey, String modelName = 'gemini-3.5-flash-lite'}) {
     _apiKey = (apiKey != null && apiKey.isNotEmpty) ? apiKey : defaultKey;
+    if (_apiKey == null || _apiKey!.trim().isEmpty) {
+      _model = null;
+      developer.log('No valid Gemini API key provided. Operating in Instant Local Composer mode.', name: 'GeminiService');
+      return;
+    }
     try {
       _model = GenerativeModel(
         model: modelName,
@@ -40,6 +45,7 @@ class GeminiService {
       developer.log('Gemini model initialized with $modelName.', name: 'GeminiService');
     } catch (e) {
       developer.log('Failed to initialize Gemini Model: $e', name: 'GeminiService');
+      _model = null;
     }
   }
 

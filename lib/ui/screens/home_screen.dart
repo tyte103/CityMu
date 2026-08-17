@@ -317,7 +317,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: const Text('🎷 深夜爵士', style: TextStyle(fontSize: 11)),
                     backgroundColor: AppTheme.chipBackground,
                     side: const BorderSide(color: AppTheme.cardBorderLight),
-                    onPressed: () => _orchestrator.chatWithAiComposer('換成深夜爵士風格，加入柔和薩克斯風與延伸七和弦'),
+                    onPressed: () async {
+                      final res = await _orchestrator.chatWithAiComposer('換成深夜爵士風格，加入柔和薩克斯風與延伸七和弦');
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('🎷 已套用 AI 作曲：${res.newComposition?.title ?? "微醺爵士 Neo-Soul"}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(width: 6),
                   ActionChip(
@@ -325,7 +335,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: const Text('⚡ 輕快 City Pop', style: TextStyle(fontSize: 11)),
                     backgroundColor: AppTheme.chipBackground,
                     side: const BorderSide(color: AppTheme.cardBorderLight),
-                    onPressed: () => _orchestrator.chatWithAiComposer('切換為80年代 City Pop 復古輕快節奏'),
+                    onPressed: () async {
+                      final res = await _orchestrator.chatWithAiComposer('切換為80年代 City Pop 復古輕快節奏');
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('⚡ 已套用 AI 作曲：${res.newComposition?.title ?? "復古 City Pop"}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(width: 6),
                   ActionChip(
@@ -333,7 +353,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: const Text('🏮 禪意古風', style: TextStyle(fontSize: 11)),
                     backgroundColor: AppTheme.chipBackground,
                     side: const BorderSide(color: AppTheme.cardBorderLight),
-                    onPressed: () => _orchestrator.chatWithAiComposer('融入廟宇古風與東方五聲音階'),
+                    onPressed: () async {
+                      final res = await _orchestrator.chatWithAiComposer('融入廟宇古風與東方五聲音階');
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('🏮 已套用 AI 作曲：${res.newComposition?.title ?? "古剎禪意東方調"}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(width: 6),
                   ActionChip(
@@ -341,7 +371,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: const Text('🌧️ 雨天 Lo-Fi', style: TextStyle(fontSize: 11)),
                     backgroundColor: AppTheme.chipBackground,
                     side: const BorderSide(color: AppTheme.cardBorderLight),
-                    onPressed: () => _orchestrator.chatWithAiComposer('營造台北細雨濛濛的慢板抒情氛圍'),
+                    onPressed: () async {
+                      final res = await _orchestrator.chatWithAiComposer('營造台北細雨濛濛的慢板抒情氛圍');
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('🌧️ 已套用 AI 作曲：${res.newComposition?.title ?? "深夜細雨 Lo-Fi"}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -1394,12 +1434,94 @@ class _AiComposerChatSheetState extends State<_AiComposerChatSheet> {
                         '🎙️ Gemini AI 作曲家即時對話',
                         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      const Text(
-                        '直接下達風格/和弦/分析指令，即時生成與即時套用',
-                        style: TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                            decoration: BoxDecoration(
+                              color: GeminiService.instance.hasValidApiKey
+                                  ? const Color(0xFFE8F5E9)
+                                  : const Color(0xFFE3F2FD),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              GeminiService.instance.hasValidApiKey ? '🟢 Gemini 3.5 雲端' : '⚡ 內建極速離線',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: GeminiService.instance.hasValidApiKey
+                                    ? const Color(0xFF2E7D32)
+                                    : AppTheme.primaryBlue,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Expanded(
+                            child: Text(
+                              '直接下達風格/和弦/分析指令',
+                              style: TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
+                ),
+                IconButton(
+                  tooltip: '設定 Gemini API Key',
+                  icon: Icon(
+                    GeminiService.instance.hasValidApiKey ? Icons.key_rounded : Icons.key_off_rounded,
+                    color: GeminiService.instance.hasValidApiKey ? const Color(0xFF2E7D32) : AppTheme.primaryBlue,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    final keyCtrl = TextEditingController(text: GeminiService.instance.currentApiKey ?? '');
+                    showDialog(
+                      context: context,
+                      builder: (dCtx) => AlertDialog(
+                        title: const Text('🔑 設定 Gemini API Key'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '輸入您的 Google Gemini API Key 以啟用完整雲端多模態即時創作。\n若留空則會以「極速內建智慧演算法」離線作曲。',
+                              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                            ),
+                            const SizedBox(height: 12),
+                            TextField(
+                              controller: keyCtrl,
+                              decoration: const InputDecoration(
+                                hintText: 'AIzaSy...',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              keyCtrl.clear();
+                              GeminiService.instance.setApiKey('');
+                              setState(() {});
+                              Navigator.pop(dCtx);
+                            },
+                            child: const Text('清除 (使用離線模式)'),
+                          ),
+                          FilledButton(
+                            onPressed: () {
+                              GeminiService.instance.setApiKey(keyCtrl.text.trim());
+                              setState(() {});
+                              Navigator.pop(dCtx);
+                            },
+                            child: const Text('儲存'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.close_rounded, color: AppTheme.textSecondary),
