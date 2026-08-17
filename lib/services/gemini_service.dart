@@ -91,7 +91,7 @@ $featuresList
 2. "chordProgression": Exactly 4 chords, each chord is an array of semitones relative to Root D=0 (e.g., Dmaj7 is [0, 4, 7, 11], Bm7 is [-3, 0, 4, 7], Gmaj7 is [-7, -3, 0, 4], A7sus4 is [-5, 0, 2, 5]).
 3. "chordNames": Exactly 4 names e.g., ["Dmaj7", "Bm7", "Gmaj7", "A7sus4"].
 4. "rootSemitones": Array of 4 integers indicating root note of each bar e.g. [0, -3, -7, -5].
-5. "motifNotes": Array of 8 to 16 note objects across the 4 bars (bar: 0..3, step: 0..15, semitone: integer relative to D=0, velocity: 0.7..1.0, hasGraceNote: boolean). Must be varied and melodic, following the chord tones and extensions of each bar.
+5. "motifNotes": Array of 4 to 8 sparse, delicate ambient sprinkle note objects across the 4 bars (bar: 0..3, step: 0..15, semitone: integer relative to D=0, velocity: 0.5..0.75, hasGraceNote: false). Must be sparse and atmospheric, leaving ample room for environmental soundscapes.
 6. Output in valid JSON matching this schema:
 {
   "title": "Landmark / Coordinate Title (e.g. 台北車站 · 晨光微光 / 忠孝東路 · 晚風脈動 / 大安林間 · 碎陽慢調)",
@@ -101,26 +101,15 @@ $featuresList
   "chordNames": ["Dmaj7", "Bm7", "Gmaj7", "A7sus4"],
   "rootSemitones": [0, -3, -7, -5],
   "motifNotes": [
-    {"bar": 0, "step": 2, "semitone": 4, "velocity": 0.9, "hasGraceNote": true},
-    {"bar": 0, "step": 6, "semitone": 7, "velocity": 0.92, "hasGraceNote": false},
-    {"bar": 0, "step": 10, "semitone": 9, "velocity": 0.85, "hasGraceNote": false},
-    {"bar": 0, "step": 14, "semitone": 12, "velocity": 0.80, "hasGraceNote": false},
-    {"bar": 1, "step": 1, "semitone": 11, "velocity": 0.86, "hasGraceNote": false},
-    {"bar": 1, "step": 5, "semitone": 9, "velocity": 0.88, "hasGraceNote": false},
-    {"bar": 1, "step": 9, "semitone": 7, "velocity": 0.82, "hasGraceNote": false},
-    {"bar": 1, "step": 13, "semitone": 4, "velocity": 0.78, "hasGraceNote": false},
-    {"bar": 2, "step": 2, "semitone": 0, "velocity": 0.88, "hasGraceNote": true},
-    {"bar": 2, "step": 6, "semitone": 4, "velocity": 0.90, "hasGraceNote": false},
-    {"bar": 2, "step": 10, "semitone": 7, "velocity": 0.94, "hasGraceNote": false},
-    {"bar": 2, "step": 14, "semitone": 14, "velocity": 0.85, "hasGraceNote": false},
-    {"bar": 3, "step": 3, "semitone": 12, "velocity": 0.90, "hasGraceNote": false},
-    {"bar": 3, "step": 7, "semitone": 9, "velocity": 0.85, "hasGraceNote": false},
-    {"bar": 3, "step": 11, "semitone": 7, "velocity": 0.80, "hasGraceNote": false},
-    {"bar": 3, "step": 15, "semitone": 0, "velocity": 0.75, "hasGraceNote": false}
+    {"bar": 0, "step": 6, "semitone": 7, "velocity": 0.65, "hasGraceNote": false},
+    {"bar": 1, "step": 4, "semitone": 9, "velocity": 0.60, "hasGraceNote": false},
+    {"bar": 1, "step": 10, "semitone": 11, "velocity": 0.58, "hasGraceNote": false},
+    {"bar": 2, "step": 8, "semitone": 14, "velocity": 0.68, "hasGraceNote": false},
+    {"bar": 3, "step": 6, "semitone": 7, "velocity": 0.60, "hasGraceNote": false}
   ],
-  "melodyWeight": 0.88,
-  "bassWeight": 0.78,
-  "textureWeight": 0.60,
+  "melodyWeight": 0.35,
+  "bassWeight": 0.45,
+  "textureWeight": 0.70,
   "sparkWeight": 0.50
 }
 ''';
@@ -357,16 +346,14 @@ $featuresList
       }
     }
 
-    // Dynamic Algorithmic Melody Generation:
-    // Builds a customized, lyrical singing arc tailored to the coordinate seed & chords
+    // Ambient Spatial Phrasing (Sparse, breathing, delicate ambient sprinkles):
+    // Leaves large acoustic space for city soundscapes, wind, and warm pad chords to breathe
     final List<AiMotifNote> generatedNotes = [];
-
-    // Musical phrasing rhythm templates per bar (Neo-Soul / Lo-Fi syncopations)
     final stepTemplates = [
-      [2, 6, 10],           // Space-filled opening motif
-      [1, 4, 8, 12],        // Groovy conversational answer
-      [2, 6, 9, 14],        // Emotive singing climax
-      [0, 4, 8],            // Gentle resolution cadence
+      [6],              // Bar 1: Single airy mid-accent
+      [4, 10],          // Bar 2: Gentle conversational two-note chime
+      [8],              // Bar 3: High resonant float note
+      [6],              // Bar 4: Peaceful resolution
     ];
 
     for (int bar = 0; bar < 4; bar++) {
@@ -377,35 +364,27 @@ $featuresList
       for (int i = 0; i < steps.length; i++) {
         final step = steps[i];
         
-        // Select harmonious pitch from chord tones with smooth voice leading
-        final toneIndex = (coordSeed + i * 2) % chord.length;
-        int notePitch = chord[toneIndex];
-
-        // Ensure notes sit comfortably within the singing register (D4 to B5)
+        // Select harmonious pitch from chord extensions for lush ambient colors
+        int notePitch;
         if (bar == 0) {
-          // Opening motif: gentle mid-range
-          notePitch = chord[i % chord.length];
+          notePitch = chord.last; // Upper harmonic extension
         } else if (bar == 1) {
-          // Ascending motion
-          notePitch = chord[(i + 1) % chord.length] + ((i == steps.length - 1) ? 2 : 0);
+          notePitch = (i == 0) ? chord[1] : (chord.length > 3 ? chord[3] : chord.last);
         } else if (bar == 2) {
-          // Sweet climax: reach 7th or 9th extension
-          notePitch = root + 9 + ((i % 2 == 0) ? 0 : -2);
+          notePitch = root + 9; // High airy float note
         } else {
-          // Resolving down to tonic root/third
-          notePitch = chord[0] + ((i == steps.length - 1) ? 0 : 4);
+          notePitch = chord[0] + 7; // Fifth harmonic resonance
         }
 
-        final bool hasGrace = (step % 4 == 2) && ((coordSeed + i) % 3 == 0);
-        final double velocity = 0.75 + (((coordSeed + step * 5) % 20) / 100.0);
+        final double velocity = 0.60 + (((coordSeed + step * 3) % 15) / 100.0);
 
         generatedNotes.add(
           AiMotifNote(
             bar: bar,
             step: step,
             semitone: notePitch,
-            velocity: velocity.clamp(0.70, 0.95),
-            hasGraceNote: hasGrace,
+            velocity: velocity.clamp(0.50, 0.75),
+            hasGraceNote: false,
           ),
         );
       }
@@ -419,7 +398,7 @@ $featuresList
       chordNames: chordNames,
       rootSemitones: roots,
       motifNotes: generatedNotes,
-      melodyWeight: 0.88,
+      melodyWeight: 0.35,
       bassWeight: bassW,
       textureWeight: textW,
       sparkWeight: sparkW,

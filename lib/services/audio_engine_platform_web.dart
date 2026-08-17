@@ -120,54 +120,45 @@ void _playCachedOrSyntheticSample(
       return;
     }
 
-    // High-Fidelity Multi-Harmonic Acoustic Felt Piano / Rhodes Synthesizer Fallback
+    // Velvet Ambient Tape Chime / Warm Kalimba Soundscape Profile
     final targetFreq = fallbackFreq * speed;
-    final osc1 = ctx.createOscillator(); // Fundamental
-    final osc2 = ctx.createOscillator(); // Warm 2nd harmonic
-    final osc3 = ctx.createOscillator(); // 3rd chime harmonic
+    final osc1 = ctx.createOscillator(); // Pure sine fundamental
+    final osc2 = ctx.createOscillator(); // Soft sub-harmonic air
     final gain1 = ctx.createGain();
     final gain2 = ctx.createGain();
-    final gain3 = ctx.createGain();
     final masterGain = ctx.createGain();
     final filter = ctx.createBiquadFilter();
 
+    // Deep warm lowpass filter (removes all harsh high-frequency transients)
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(2400.0, now);
-    filter.frequency.exponentialRampToValueAtTime(700.0, now + 1.2);
+    filter.frequency.setValueAtTime(950.0, now);
+    filter.frequency.exponentialRampToValueAtTime(480.0, now + 1.8);
 
     osc1.type = 'sine';
     osc1.frequency.setValueAtTime(targetFreq, now);
-    gain1.gain.setValueAtTime(0.70, now);
+    gain1.gain.setValueAtTime(0.85, now);
 
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(targetFreq * 2.0, now);
-    gain2.gain.setValueAtTime(0.22, now);
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(targetFreq * 0.5, now); // Soft octave below for depth
+    gain2.gain.setValueAtTime(0.15, now);
 
-    osc3.type = 'sine';
-    osc3.frequency.setValueAtTime(targetFreq * 3.0, now);
-    gain3.gain.setValueAtTime(0.08, now);
-
-    // Natural Piano ADSR Envelope
-    final effVol = volume.clamp(0.01, 1.0) * 0.45;
+    // Soft pillow ambient attack (no mechanical hammer strike)
+    final effVol = volume.clamp(0.01, 1.0) * 0.28;
     masterGain.gain.setValueAtTime(0.0001, now);
-    masterGain.gain.linearRampToValueAtTime(effVol, now + 0.006); // Fast natural hammer strike
-    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.8); // Smooth musical ring decay
+    masterGain.gain.linearRampToValueAtTime(effVol, now + 0.045); // Gentle fade-in
+    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4); // Long ambient reverb tail
 
     osc1.connect(gain1);
     osc2.connect(gain2);
-    osc3.connect(gain3);
     gain1.connect(filter);
     gain2.connect(filter);
-    gain3.connect(filter);
     filter.connect(masterGain);
     masterGain.connect(ctx.destination);
 
     osc1.start(now);
     osc2.start(now);
-    osc3.start(now);
-    osc1.stop(now + 1.9);
-    osc2.stop(now + 1.9);
-    osc3.stop(now + 1.9);
+    osc1.stop(now + 2.5);
+    osc2.stop(now + 2.5);
   } catch (_) {}
 }
 
@@ -321,22 +312,27 @@ void playHtml5GlideNote({
       return;
     }
 
-    // Synthetic glide
+    // Soft ethereal ambient sine glide
     final osc = ctx.createOscillator();
     final gain = ctx.createGain();
+    final filter = ctx.createBiquadFilter();
 
-    osc.type = 'triangle';
+    filter.type = 'lowpass';
+    filter.frequency.value = 850.0;
+
+    osc.type = 'sine';
     osc.frequency.setValueAtTime(_semitoneToFreq(startSemitone), now);
     osc.frequency.exponentialRampToValueAtTime(_semitoneToFreq(targetSemitone), now + glideDuration);
 
-    gain.gain.setValueAtTime(volume * 0.35, now);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+    gain.gain.setValueAtTime(volume * 0.20, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
 
-    osc.connect(gain);
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.85);
+    osc.stop(now + 1.25);
   } catch (_) {}
 }
 

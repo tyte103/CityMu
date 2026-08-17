@@ -186,7 +186,7 @@ class MusicCompositionCard extends StatelessWidget {
                 Expanded(
                   child: _buildTrackMuteBtn(
                     context,
-                    label: '🎵 AI 旋律',
+                    label: '✨ 空間微風',
                     isMuted: orchestrator.isMelodyMuted,
                     onTap: () => orchestrator.toggleTrackMute('melody'),
                     accentColor: AppTheme.parkZoneGreen,

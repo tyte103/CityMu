@@ -439,7 +439,7 @@ class MusicOrchestrator extends ChangeNotifier {
       } else if (step == 8 || (step == 10 && _random.nextDouble() < 0.5)) {
         // Groovy Passing Bass Note (Fifth or Root)
         final bassTone = (step == 8) ? (rootSemitone + 7) : rootSemitone;
-        final bassVol = 0.60 * _currentComposition.bassWeight * humanVelocity;
+        final bassVol = 0.32 * _currentComposition.bassWeight * humanVelocity;
         await _audioEngine.playBassNote(
           semitones: bassTone,
           volume: bassVol,
@@ -456,23 +456,15 @@ class MusicOrchestrator extends ChangeNotifier {
       }
     }
 
-    // 2. Pure Lo-Fi Recurring AI-Composed Motif Melody Execution (if not muted)
+    // 2. Pure Lo-Fi Recurring Ambient AI-Composed Motif Notes (if not muted)
     if (!isMelodyMuted) {
       final matchedNotes = _currentComposition.motifNotes.where((m) => m.bar == bar && m.step == step);
       if (matchedNotes.isNotEmpty) {
         final note = matchedNotes.first;
         semitone = note.semitone;
-        activeSound = '${_noteName(semitone)} 空間專屬 AI 動機';
-        final melodyVol = 0.76 * note.velocity * _currentComposition.melodyWeight * humanVelocity;
-
-        // Jazz Grace Note (微裝飾音)
-        if (note.hasGraceNote) {
-          _audioEngine.playMelodyNote(
-            semitones: semitone - 1,
-            volume: 0.35 * humanVelocity,
-          );
-          await Future.delayed(const Duration(milliseconds: 28));
-        }
+        activeSound = '${_noteName(semitone)} 空間微風點綴音';
+        // Gentle ambient volume sitting subtly in the background rather than being a prominent lead instrument
+        final melodyVol = 0.26 * note.velocity * _currentComposition.melodyWeight * humanVelocity;
 
         await _audioEngine.playMelodyNote(
           semitones: semitone,
@@ -480,9 +472,9 @@ class MusicOrchestrator extends ChangeNotifier {
         );
 
         logSoundFx(
-          category: '✨ 主奏旋律',
-          soundName: '${_noteName(semitone)} 空間專屬 AI 動機',
-          dspDetails: '音高: $semitone | 裝飾音: ${note.hasGraceNote ? "微裝飾(-1)" : "無"} | 力度: ${(note.velocity * 100).toInt()}%',
+          category: '✨ 空間微風點綴',
+          soundName: '${_noteName(semitone)} 空間微風點綴音',
+          dspDetails: '音高: $semitone | 溫潤低通: 950Hz | 音量: ${(melodyVol * 100).toInt()}%',
           volume: melodyVol,
           semitone: semitone,
           stepInfo: 'Bar ${bar + 1}, Step $step',
