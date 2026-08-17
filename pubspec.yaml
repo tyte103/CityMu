@@ -1,0 +1,52 @@
+name: citymu
+description: "CityMu - Google Tech-Driven Urban Spatial Foley Lo-Fi Music Generator"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Google Cloud / AI / Maps Ecosystem
+  google_generative_ai: ^0.4.6
+  google_maps_flutter: ^2.10.0
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.4
+  google_fonts: ^6.2.1
+
+  # High-Performance Audio Engine (C++ DSP)
+  flutter_soloud: ^2.1.2
+
+  # GIS & Spatial Computation
+  turf: ^0.0.9
+
+  # Hardware Sensors & Location
+  geolocator: ^13.0.1
+  sensors_plus: ^6.1.0
+  permission_handler: ^11.3.1
+
+  # Android Background Keep-Alive
+  flutter_foreground_task: ^8.17.0
+
+  # Utilities & Icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/audio/foley_primary/
+    - assets/audio/fallback_instruments/
+    - assets/audio/taiwan_urban/
+    - assets/audio/real_recordings/
+    - assets/geo/
+    - assets/map_styles/

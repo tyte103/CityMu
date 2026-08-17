@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "name": "water_pipes",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "main_water_trunk_1", "name": "Underground Main Water Conduit" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.5150, 25.0400],
+          [121.5220, 25.0460],
+          [121.5280, 25.0510]
+        ]
+      }
+    }
+  ]
+}

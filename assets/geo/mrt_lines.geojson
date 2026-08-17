@@ -1,0 +1,32 @@
+{
+  "type": "FeatureCollection",
+  "name": "mrt_lines",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "mrt_red_line", "name": "Taipei MRT Red Line" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.5170, 25.0478],
+          [121.5200, 25.0500],
+          [121.5230, 25.0530],
+          [121.5250, 25.0600]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "mrt_blue_line", "name": "Taipei MRT Blue Line" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [121.5000, 25.0420],
+          [121.5170, 25.0420],
+          [121.5430, 25.0420],
+          [121.5650, 25.0420]
+        ]
+      }
+    }
+  ]
+}

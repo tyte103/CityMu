@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "name": "power_grid",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "substation_alpha", "name": "Main Urban Substation" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.5200, 25.0450]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "power_transformer_beta", "name": "District Transformer Node" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.5300, 25.0480]
+      }
+    }
+  ]
+}
