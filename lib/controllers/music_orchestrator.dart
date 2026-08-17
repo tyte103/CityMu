@@ -404,7 +404,8 @@ class MusicOrchestrator extends ChangeNotifier {
       if (step == 0) {
         isPad = true;
         activeSound = '$chordName 暖陽和弦 Pad';
-        final padVol = 0.62 * _currentComposition.melodyWeight * humanVelocity;
+        // Lowered volume multiplier from 0.62 to 0.32 for a softer, more ambient pad
+        final padVol = 0.32 * _currentComposition.melodyWeight * humanVelocity;
         await _audioEngine.playPad(
           semitones: chord,
           volume: padVol,
@@ -420,7 +421,8 @@ class MusicOrchestrator extends ChangeNotifier {
         );
 
         // Deep Root Bass Note on Downbeat
-        final bassVol = 0.75 * _currentComposition.bassWeight * humanVelocity;
+        // Lowered volume multiplier from 0.75 to 0.42 for a gentler bass presence
+        final bassVol = 0.42 * _currentComposition.bassWeight * humanVelocity;
         await _audioEngine.playBassNote(
           semitones: rootSemitone,
           volume: bassVol,
